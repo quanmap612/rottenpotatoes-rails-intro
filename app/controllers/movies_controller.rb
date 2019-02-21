@@ -11,8 +11,23 @@ class MoviesController < ApplicationController
   end
 
   def index
-    @sort = params[:sort]
-    @movies = Movie.all.order(@sort)
+    @all_ratings = Movie.listRatings
+    # @sort = params[:sort]
+    # if params[:ratings].nil?
+    #   filter = @all_ratings
+    # else
+    #   filter = params[:ratings].keys
+    # end
+
+    # @movies = Movie.where(rating:filter).order(@sort)
+  
+    session[:sort] = params[:sort] || session[:sort]
+    session[:ratings] = params[:ratings] || session[:ratings] || {'G'=>'', 'PG'=>'' , 'PG-13'=>'', 'R'=>''}
+    @movies = Movie.where(rating: session[:ratings].keys).order(session[:sort])
+    if (session[:sort].nil? and !(session[:sort].nil?)) or (params[:ratings].nil? and !(session[:ratings].nil?))
+      flash.keep
+      redirect_to movies_path(sort: session[:sort] ,ratings: session[:ratings])    
+    end
   end
 
   def new
