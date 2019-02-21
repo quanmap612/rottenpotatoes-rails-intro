@@ -25,7 +25,8 @@ class MoviesController < ApplicationController
   
   
     #########part 3 here
-    session[:sort] = params[:sort] || session[:sort]
+    @sort = params[:sort] || session[:sort]
+    session[:sort] = @sort
     session[:ratings] = params[:ratings] || session[:ratings] || {'G'=>'', 'PG'=>'' , 'PG-13'=>'', 'R'=>''}
     @movies = Movie.where(rating: session[:ratings].keys).order(session[:sort])
     if (session[:sort].nil? and !(session[:sort].nil?)) or (params[:ratings].nil? and !(session[:ratings].nil?))
@@ -33,7 +34,7 @@ class MoviesController < ApplicationController
       redirect_to movies_path(sort: session[:sort] ,ratings: session[:ratings])    
     end
   end
-
+  
   def new
     # default: render 'new' template
   end
